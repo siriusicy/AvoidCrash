@@ -96,7 +96,7 @@ pod 'AvoidCrash', '~> 2.5.2'
 
 ### Manually【手动导入】
 - Drag all source files under floder `AvoidCrash` to your project.【将`AvoidCrash`文件夹中的所有源代码拽入项目中】
-- 对 NSMutableArray+AvoidCrash.m 文件进行 -fno-objc-arc 设置(若使用CocoaPods集成则无需手动配置)，配置过程如下图：
+- 对 `NSArray+AvoidCrash.m`、`NSMutableArray+AvoidCrash.m` 进行 `-fno-objc-arc` 设置（若使用 CocoaPods 集成则无需手动配置）。ARC 下 hook `objectAtIndex:` 会插入 extra autorelease，经 `CFArrayGetValueAtIndex` 被 RunLoop 调用后会撑爆自动释放池导致 OOM。配置过程如下图：
 
 
 ![](https://raw.githubusercontent.com/chenfanfang/AvoidCrash/e955af927c5ed57f783a71eaca19cb3f028377d0/AvoidCrashDemo/Screenshot/%E9%85%8D%E7%BD%AEmutableArray.png)
@@ -247,6 +247,7 @@ pod 'AvoidCrash', '~> 2.5.2'
 	- `5. - (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target withString:(NSString *)replacement`
 	- `6. - (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target withString:(NSString *)replacement options:(NSStringCompareOptions)options range:(NSRange)searchRange`
 	- `7. - (NSString *)stringByReplacingCharactersInRange:(NSRange)range withString:(NSString *)replacement`
+	- `8. - (NSString *)stringByAppendingString:(NSString *)aString`
 
 ---
 

@@ -10,6 +10,10 @@
 
 #import "AvoidCrash.h"
 
+#if __has_feature(objc_arc)
+#error NSMutableArray+AvoidCrash.m must be compiled with -fno-objc-arc. ARC inserts autorelease on objectAtIndex: returns; CFArrayGetValueAtIndex / RunLoop observers then leak AutoreleasePoolPages and can OOM.
+#endif
+
 @implementation NSMutableArray (AvoidCrash)
 
 + (void)avoidCrashExchangeMethod {

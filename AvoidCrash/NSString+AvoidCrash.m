@@ -38,6 +38,17 @@
         
         //stringByReplacingCharactersInRange:withString:
         [AvoidCrash exchangeInstanceMethod:stringClass method1Sel:@selector(stringByReplacingCharactersInRange:withString:) method2Sel:@selector(avoidCrashStringByReplacingCharactersInRange:withString:)];
+        
+        //stringByAppendingString:
+        Class taggedPointerStringClass = NSClassFromString(@"NSTaggedPointerString");
+        Class cfStringClass = NSClassFromString(@"__NSCFString");
+        Class stringByAppendingStringClasses[] = {stringClass, taggedPointerStringClass, cfStringClass};
+        for (int i = 0; i < 3; i++) {
+            Class cls = stringByAppendingStringClasses[i];
+            if (cls && class_getInstanceMethod(cls, @selector(stringByAppendingString:))) {
+                [AvoidCrash exchangeInstanceMethod:cls method1Sel:@selector(stringByAppendingString:) method2Sel:@selector(avoidCrashStringByAppendingString:)];
+            }
+        }
     });
     
 }
@@ -194,6 +205,28 @@
         NSString *defaultToDo = AvoidCrashDefaultReturnNil;
         [AvoidCrash noteErrorWithException:exception defaultToDo:defaultToDo];
         newStr = nil;
+    }
+    @finally {
+        return newStr;
+    }
+}
+
+//=================================================================
+//                     stringByAppendingString:
+//=================================================================
+#pragma mark - stringByAppendingString:
+
+- (NSString *)avoidCrashStringByAppendingString:(NSString *)aString {
+    
+    NSString *newStr = nil;
+    
+    @try {
+        newStr = [self avoidCrashStringByAppendingString:aString];
+    }
+    @catch (NSException *exception) {
+        NSString *defaultToDo = @"AvoidCrash default is to return self to avoid crash.";
+        [AvoidCrash noteErrorWithException:exception defaultToDo:defaultToDo];
+        newStr = self;
     }
     @finally {
         return newStr;
